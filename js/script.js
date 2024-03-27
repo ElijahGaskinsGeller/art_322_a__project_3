@@ -38,6 +38,14 @@ function RandomInt(max){
     return result;
 }
 
+function AddOnFrameEvent(object, frame, func){
+    return object.timeline.addTween(createjs.Tween.get(object).wait(frame).call(func).wait(1));
+}
+
+function RemoveOnFrameEvent(object, tween){
+    return object.timeline.removeTween(tween);
+}
+
 function page_init(lib){
     console.log(lib);
 
@@ -71,13 +79,28 @@ function page_init(lib){
         let i = 0;
 
         while(currentBox !== undefined){
+            currentBox.gotoAndStop(0);
+            currentBox.setColor = "#000000"
+
+            let localBox = currentBox;
+
+            let tween = AddOnFrameEvent(currentBox,currentBox.totalFrames-1, function(){
+
+                localBox.children[0].graphics._fill.style = localBox.setColor;
+
+
+                localBox.gotoAndStop(0);
+
+                // RemoveOnFrameEvent(tween);
+
+            })
+
             boxes.push(currentBox);
             i++;
             currentBox = page["box_"+i];
         }
     }
 
-    console.log(boxes[0]);
 
 
     let canvas = document.getElementById("canvas");
@@ -135,7 +158,7 @@ function page_init(lib){
 
         }
 
-        let speed = 10;
+        let speed = 5;
 
         let currentBallRect = new createjs.Rectangle(0,0,0,0);
         let currentBoxRect = new createjs.Rectangle(0,0,0,0);
@@ -158,9 +181,48 @@ function page_init(lib){
                 currentBoxRect.width = boxes[i].nominalBounds.width;
                 currentBoxRect.height = boxes[i].nominalBounds.height;
 
-                if(currentBoxRect.intersects(currentBallRect)){
 
-                    boxes[i].children[0].graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                if(currentBoxRect.intersects(currentBallRect) && boxes[i].paused){
+
+                    boxes[i].shape.graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                    boxes[i].shape_1.graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                    boxes[i].shape_2.graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                    boxes[i].shape_3.graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                    boxes[i].shape_4.graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                    boxes[i].shape_5.graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                    boxes[i].shape_6.graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                    boxes[i].shape_7.graphics._fill.style = currentBall.children[0].graphics._fill.style;
+
+                    boxes[i].setColor = currentBall.children[0].graphics._fill.style;
+
+
+                    //TODO: ADD SPLASH EFFECT ON COLLISION
+                    //TODO: ONLY HAVE COLLISION ON TOP OF THE LEAF
+
+                    currentBall.x = RandomInt(canvas.width);
+                    currentBall.y = -RandomInt(100);
+
+                    let color = Math.floor(Math.random()*16777215).toString(16);
+                    currentBall.children[0].graphics._fill.style = "#"+color;
+
+                    // let tween = AddOnFrameEvent(boxes[i],boxes[i].totalFrames-1, function(){
+                    //
+                    //     boxes[i].children[0].graphics._fill.style = boxes[i].setColor;
+                    //
+                    //
+                    //     boxes[i].gotoAndStop(0);
+                    //
+                    //     // RemoveOnFrameEvent(tween);
+                    //
+                    // });
+
+                    // console.log(tween);
+
+
+                    boxes[i].gotoAndPlay(0);
+
+
+                    // boxes[i].children[0].graphics._fill.style = currentBall.children[0].graphics._fill.style;
 
                 }
 
@@ -178,9 +240,7 @@ function page_init(lib){
 
         }
 
-        // console.log(activeBalls);
 
-        // console.log(t);
         requestAnimationFrame(update);
     }
 

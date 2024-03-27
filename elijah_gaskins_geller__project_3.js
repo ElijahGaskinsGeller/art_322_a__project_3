@@ -52,16 +52,52 @@ if (reversed == null) { reversed = false; }
 	props.reversed = reversed;
 	cjs.MovieClip.apply(this,[props]);
 
-	// Layer_1
+	// Layer_2
 	this.shape = new cjs.Shape();
-	this.shape.graphics.f("#000000").s().p("AjBDCIAAmDIGDAAIAAGDg");
-	this.shape.setTransform(19.425,19.425);
+	this.shape.graphics.f("#000000").s().p("AjBAIIAAgPIGDAAIAAAPg");
+	this.shape.setTransform(20.925,0.825);
 
-	this.timeline.addTween(cjs.Tween.get(this.shape).wait(1));
+	this.shape_1 = new cjs.Shape();
+	this.shape_1.graphics.f("#000000").s().p("AjBASIAAgjIGDAAIAAAjg");
+	this.shape_1.setTransform(19.425,1.75);
+
+	this.shape_2 = new cjs.Shape();
+	this.shape_2.graphics.f("#000000").s().p("AjBAxIAAhhIGDAAIAABhg");
+	this.shape_2.setTransform(19.425,4.875);
+
+	this.shape_3 = new cjs.Shape();
+	this.shape_3.graphics.f("#000000").s().p("AjBBZIAAixIGDAAIAACxg");
+	this.shape_3.setTransform(19.425,8.925);
+
+	this.shape_4 = new cjs.Shape();
+	this.shape_4.graphics.f("#000000").s().p("AjBB+IAAj7IGDAAIAAD7g");
+	this.shape_4.setTransform(19.425,12.6);
+
+	this.shape_5 = new cjs.Shape();
+	this.shape_5.graphics.f("#000000").s().p("AjBCiIAAlDIGDAAIAAFDg");
+	this.shape_5.setTransform(19.425,16.15);
+
+	this.shape_6 = new cjs.Shape();
+	this.shape_6.graphics.f("#000000").s().p("AjBCtIAAlZIGDAAIAAFZg");
+	this.shape_6.setTransform(19.425,17.325);
+
+	this.shape_7 = new cjs.Shape();
+	this.shape_7.graphics.f("#000000").s().p("AjBDCIAAmDIGDAAIAAGDg");
+	this.shape_7.setTransform(19.425,19.425);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[]}).to({state:[{t:this.shape}]},1).to({state:[{t:this.shape_1}]},3).to({state:[{t:this.shape_2}]},3).to({state:[{t:this.shape_3}]},3).to({state:[{t:this.shape_4}]},3).to({state:[{t:this.shape_5}]},3).to({state:[{t:this.shape_6}]},3).to({state:[{t:this.shape_7}]},3).wait(3));
+
+	// Layer_1
+	this.shape_8 = new cjs.Shape();
+	this.shape_8.graphics.f("#000000").s().p("AjBDCIAAmDIGDAAIAAGDg");
+	this.shape_8.setTransform(19.425,19.425);
+
+	this.timeline.addTween(cjs.Tween.get(this.shape_8).wait(25));
 
 	this._renderFirstFrame();
 
-}).prototype = getMCSymbolPrototype(lib.box, new cjs.Rectangle(0,0,38.9,38.9), null);
+}).prototype = p = new cjs.MovieClip();
+p.nominalBounds = new cjs.Rectangle(0,0,40.4,38.9);
 
 
 (lib.ball = function(mode,startPosition,loop,reversed) {
