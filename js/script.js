@@ -1,5 +1,3 @@
-
-
 function GetPageHeight() {
     return Math.max(document.body.scrollHeight, document.body.offsetHeight,
         document.documentElement.clientHeight, document.documentElement.scrollHeight,
@@ -33,20 +31,20 @@ function RectNormalPositionOnScreen(rectY, rectHeight, screenHeight) {
 
 }
 
-function RandomInt(max){
+function RandomInt(max) {
     let result = Math.round(Math.random() * max);
     return result;
 }
 
-function AddOnFrameEvent(object, frame, func){
+function AddOnFrameEvent(object, frame, func) {
     return object.timeline.addTween(createjs.Tween.get(object).wait(frame).call(func).wait(1));
 }
 
-function RemoveOnFrameEvent(object, tween){
+function RemoveOnFrameEvent(object, tween) {
     return object.timeline.removeTween(tween);
 }
 
-function page_init(lib){
+function page_init(lib) {
     console.log(lib);
 
     let _this = stage.children[0];
@@ -57,40 +55,40 @@ function page_init(lib){
     ballBase.visible = false;
 
     let ballPool = [];
-    let ballCount = 100;
+    let ballCount = 500;
 
     let activeBalls = [];
-    let maxActiveBalls = 25;
+    let maxActiveBalls = 75;
 
     let leafs = [];
 
     let colorPool = ["#396788", "#3b3988", "#8f44a7", "#a7447e", "#a1474b", "#718839", "#886439"];
 
-    function PullFromColorPool(){
-        return colorPool[RandomInt(colorPool.length-1)];
+    function PullFromColorPool() {
+        return colorPool[RandomInt(colorPool.length - 1)];
     }
 
     console.log(page);
     console.log(ballBase);
     console.log(ballBase.nominalBounds);
 
-    for(let i = 0; i < ballCount; i++){
-        let newBall = new lib.ball(0,0,-1,0);
+    for (let i = 0; i < ballCount; i++) {
+        let newBall = new lib.ball(0, 0, -1, 0);
         //TODO: maybe randomize scale
-        newBall.scaleX =.15;
-        newBall.scaleY =.15;
+        newBall.scaleX = .15;
+        newBall.scaleY = .15;
         newBall.visible = false;
         // let newBall = ballBase.clone();
         page.addChild(newBall);
 
 
         newBall.gotoAndStop(0);
-        let tween = AddOnFrameEvent(newBall,newBall.totalFrames-1, function(){
+        let tween = AddOnFrameEvent(newBall, newBall.totalFrames - 1, function () {
 
             newBall.x = RandomInt(canvas.width);
             newBall.y = -RandomInt(100);
 
-            let color = Math.floor(Math.random()*16777215).toString(16);
+            let color = Math.floor(Math.random() * 16777215).toString(16);
             newBall.fill.children[0].graphics._fill.style = PullFromColorPool();
 
 
@@ -105,16 +103,50 @@ function page_init(lib){
 
     {
         // let currentBox = page["box_0"];
-        let currentLeaf = page["leaf_0"];
-        let i = 0;
+        //     let currentLeaf = page["leaf_0"];
+        //     let i = 0;
+        //
+        //     while(currentLeaf !== undefined){
+        //         currentLeaf.gotoAndStop(0);
+        //         currentLeaf.setColor = "#000000"
+        //
+        //         let localLeaf = currentLeaf;
+        //
+        //         let tween = AddOnFrameEvent(currentLeaf,currentLeaf.totalFrames-1, function(){
+        //
+        //             localLeaf.children[0].graphics._fill.style = localLeaf.setColor;
+        //             localLeaf.children[0].opacity = 1;
+        //
+        //
+        //             localLeaf.gotoAndStop(0);
+        //
+        //             // RemoveOnFrameEvent(tween);
+        //
+        //         })
+        //
+        //         leafs.push(currentLeaf);
+        //         i++;
+        //         currentLeaf = page["leaf_"+i];
+        //     }
+        // }
+    }
 
-        while(currentLeaf !== undefined){
-            currentLeaf.gotoAndStop(0);
-            currentLeaf.setColor = "#000000"
+    for (let i = 0; i < page.children.length; i++) {
 
-            let localLeaf = currentLeaf;
+        let currentObject = page.children[i];
 
-            let tween = AddOnFrameEvent(currentLeaf,currentLeaf.totalFrames-1, function(){
+        let type = typeof currentObject;
+
+        console.log(currentObject.instanceName);
+
+
+        if (currentObject.totalFrames > ballBase.totalFrames) {
+            currentObject.gotoAndStop(0);
+            currentObject.setColor = "#000000"
+
+            let localLeaf = currentObject;
+
+            let tween = AddOnFrameEvent(currentObject, currentObject.totalFrames - 1, function () {
 
                 localLeaf.children[0].graphics._fill.style = localLeaf.setColor;
                 localLeaf.children[0].opacity = 1;
@@ -126,12 +158,13 @@ function page_init(lib){
 
             })
 
-            leafs.push(currentLeaf);
-            i++;
-            currentLeaf = page["leaf_"+i];
+            leafs.push(currentObject);
         }
+
+
     }
 
+    console.log(leafs);
     console.log(leafs[0].nominalBounds);
 
     let canvas = document.getElementById("canvas");
@@ -147,7 +180,7 @@ function page_init(lib){
     let scrollEnd = calcScrollEnd();
 
 
-    function onResize(e){
+    function onResize(e) {
         let stageRatio = lib.properties.height / lib.properties.width;
 
         stage.scaleY = canvas.clientWidth / canvas.clientHeight * window.devicePixelRatio * stageRatio;
@@ -164,14 +197,14 @@ function page_init(lib){
 
         let currentScroll = WindowScrollNormalPosition();
 
-        page.y = lerp(scrollStart,scrollEnd, currentScroll);
+        page.y = lerp(scrollStart, scrollEnd, currentScroll);
 
 
     }
 
-    function update(t){
+    function update(t) {
 
-        while(activeBalls.length < maxActiveBalls){
+        while (activeBalls.length < maxActiveBalls) {
 
             let currentBall = ballPool.pop();
             currentBall.visible = true;
@@ -180,7 +213,7 @@ function page_init(lib){
             activeBalls.push(currentBall);
 
 
-            let color = Math.floor(Math.random()*16777215).toString(16);
+            let color = Math.floor(Math.random() * 16777215).toString(16);
             // currentBall.children[0].graphics._fill.style = "#"+color;
             // currentBall.children[0].graphics._fill.style = PullFromColorPool();
             currentBall.fill.children[0].graphics._fill.style = PullFromColorPool();
@@ -191,12 +224,12 @@ function page_init(lib){
 
         }
 
-        let speed = 20;
+        let speed = 2;
 
-        let currentBallRect = new createjs.Rectangle(0,0,0,0);
-        let currentLeafRect = new createjs.Rectangle(0,0,0,0);
+        let currentBallRect = new createjs.Rectangle(0, 0, 0, 0);
+        let currentLeafRect = new createjs.Rectangle(0, 0, 0, 0);
 
-        for(let i = 0; i < activeBalls.length; i++){
+        for (let i = 0; i < activeBalls.length; i++) {
             let currentBall = activeBalls[i];
 
 
@@ -206,7 +239,7 @@ function page_init(lib){
             currentBallRect.height = currentBall.nominalBounds.height * currentBall.scaleY;
 
 
-            for(let j = 0; j < leafs.length; j++){
+            for (let j = 0; j < leafs.length; j++) {
 
                 // currentLeafRect.x = leafs[j].x;
                 // currentLeafRect.y = leafs[j].y;
@@ -217,24 +250,31 @@ function page_init(lib){
                 currentLeafRect.width = leafs[j].nominalBounds.width;
                 currentLeafRect.height = leafs[j].nominalBounds.height;
 
-                for(let k = 0; k <= 1; k+=.1){
+                for (let k = 0; k <= 1; k += .1) {
 
 
-                    if(leafs[j] === undefined){
+                    if (leafs[j] === undefined) {
                         console.log(j);
                     }
 
                     currentLeafRect.y = leafs[j].y + lerp(0, speed, k);
 
-                    if(currentLeafRect.intersects(currentBallRect) && leafs[j].paused){
+                    if (currentLeafRect.intersects(currentBallRect) && leafs[j].paused && currentBall.paused && leafs[j].setColor !== currentBall.fill.children[0].graphics._fill.style) {
 
 
                         // leafs[j].fill.children[0].graphics._fill.style = currentBall.children[0].graphics._fill.style;
-                        leafs[j].fill.children[0].graphics._fill.style =  currentBall.fill.children[0].graphics._fill.style;
+                        leafs[j].fill.children[0].graphics._fill.style = currentBall.fill.children[0].graphics._fill.style;
                         leafs[j].fill.opacity = 1;
 
-                        leafs[j].setColor =  currentBall.fill.children[0].graphics._fill.style;
+                        leafs[j].setColor = currentBall.fill.children[0].graphics._fill.style;
                         leafs[j].opacity = 1;
+
+
+                        let globalBallPos = currentBall.localToGlobal(0, 0);
+                        let localBallPos = leafs[j].globalToLocal(globalBallPos.x, globalBallPos.y);
+                        leafs[j].fill.x = localBallPos.x;
+                        leafs[j].fill.y = localBallPos.y;
+
 
                         //TODO: set fill color
 
@@ -287,17 +327,17 @@ function page_init(lib){
 
             }
 
-            if(currentBall.paused){
+            if (currentBall.paused) {
                 currentBall.y += speed;
                 currentBall.y += speed;
             }
 
 
-            if(currentBall.y > page.nominalBounds.height){
+            if (currentBall.y > page.nominalBounds.height) {
                 currentBall.x = RandomInt(canvas.width);
                 currentBall.y = -RandomInt(100);
 
-                let color = Math.floor(Math.random()*16777215).toString(16);
+                let color = Math.floor(Math.random() * 16777215).toString(16);
                 // currentBall.children[0].graphics._fill.style = "#"+color;
                 currentBall.fill.children[0].graphics._fill.style = PullFromColorPool();
 
