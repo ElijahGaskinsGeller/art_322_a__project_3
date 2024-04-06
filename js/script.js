@@ -62,7 +62,7 @@ function page_init(lib){
     let activeBalls = [];
     let maxActiveBalls = 25;
 
-    let boxes = [];
+    let leafs = [];
 
     console.log(page);
     console.log(ballBase);
@@ -75,33 +75,35 @@ function page_init(lib){
     }
 
     {
-        let currentBox = page["box_0"];
+        // let currentBox = page["box_0"];
+        let currentLeaf = page["leaf_0"];
         let i = 0;
 
-        while(currentBox !== undefined){
-            currentBox.gotoAndStop(0);
-            currentBox.setColor = "#000000"
+        while(currentLeaf !== undefined){
+            currentLeaf.gotoAndStop(0);
+            currentLeaf.setColor = "#000000"
 
-            let localBox = currentBox;
+            let localLeaf = currentLeaf;
 
-            let tween = AddOnFrameEvent(currentBox,currentBox.totalFrames-1, function(){
+            let tween = AddOnFrameEvent(currentLeaf,currentLeaf.totalFrames-1, function(){
 
-                localBox.children[0].graphics._fill.style = localBox.setColor;
+                localLeaf.children[0].graphics._fill.style = localLeaf.setColor;
 
 
-                localBox.gotoAndStop(0);
+                localLeaf.gotoAndStop(0);
 
                 // RemoveOnFrameEvent(tween);
 
             })
 
-            boxes.push(currentBox);
+            leafs.push(currentLeaf);
             i++;
-            currentBox = page["box_"+i];
+            currentLeaf = page["leaf_"+i];
         }
     }
 
-
+    console.log(leafs[0]);
+    console.log(leafs.length);
 
     let canvas = document.getElementById("canvas");
 
@@ -161,7 +163,7 @@ function page_init(lib){
         let speed = 5;
 
         let currentBallRect = new createjs.Rectangle(0,0,0,0);
-        let currentBoxRect = new createjs.Rectangle(0,0,0,0);
+        let currentLeafRect = new createjs.Rectangle(0,0,0,0);
 
         for(let i = 0; i < activeBalls.length; i++){
             let currentBall = activeBalls[i];
@@ -174,30 +176,32 @@ function page_init(lib){
             currentBallRect.height = currentBall.nominalBounds.height * currentBall.scaleY;
 
 
-            for(let i = 0; i < boxes.length; i++){
+            for(let i = 0; i < leafs.length; i++){
 
-                currentBoxRect.x = boxes[i].x;
-                currentBoxRect.y = boxes[i].y;
-                currentBoxRect.width = boxes[i].nominalBounds.width;
-                currentBoxRect.height = boxes[i].nominalBounds.height;
+                currentLeafRect.x = leafs[i].x;
+                currentLeafRect.y = leafs[i].y;
+                currentLeafRect.width = leafs[i].nominalBounds.width;
+                currentLeafRect.height = leafs[i].nominalBounds.height;
 
 
-                if(currentBoxRect.intersects(currentBallRect) && boxes[i].paused){
+                if(currentLeafRect.intersects(currentBallRect) && leafs[i].paused){
 
-                    boxes[i].shape.graphics._fill.style = currentBall.children[0].graphics._fill.style;
-                    boxes[i].shape_1.graphics._fill.style = currentBall.children[0].graphics._fill.style;
-                    boxes[i].shape_2.graphics._fill.style = currentBall.children[0].graphics._fill.style;
-                    boxes[i].shape_3.graphics._fill.style = currentBall.children[0].graphics._fill.style;
-                    boxes[i].shape_4.graphics._fill.style = currentBall.children[0].graphics._fill.style;
-                    boxes[i].shape_5.graphics._fill.style = currentBall.children[0].graphics._fill.style;
-                    boxes[i].shape_6.graphics._fill.style = currentBall.children[0].graphics._fill.style;
-                    boxes[i].shape_7.graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                    // leafs[i].shape.graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                    // leafs[i].shape_1.graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                    // leafs[i].shape_2.graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                    // leafs[i].shape_3.graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                    // leafs[i].shape_4.graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                    // leafs[i].shape_5.graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                    // leafs[i].shape_6.graphics._fill.style = currentBall.children[0].graphics._fill.style;
 
-                    boxes[i].setColor = currentBall.children[0].graphics._fill.style;
+                    leafs[i].fill.children[0].graphics._fill.style = currentBall.children[0].graphics._fill.style;
+
+                    leafs[i].setColor = currentBall.children[0].graphics._fill.style;
+
+                    //TODO: set fill color
 
 
                     //TODO: ADD SPLASH EFFECT ON COLLISION
-                    //TODO: ONLY HAVE COLLISION ON TOP OF THE LEAF
 
                     currentBall.x = RandomInt(canvas.width);
                     currentBall.y = -RandomInt(100);
@@ -219,7 +223,7 @@ function page_init(lib){
                     // console.log(tween);
 
 
-                    boxes[i].gotoAndPlay(0);
+                    leafs[i].gotoAndPlay(0);
 
 
                     // boxes[i].children[0].graphics._fill.style = currentBall.children[0].graphics._fill.style;
@@ -230,7 +234,7 @@ function page_init(lib){
 
 
 
-            if(currentBall.y > canvas.height){
+            if(currentBall.y > page.nominalBounds.height){
                 currentBall.x = RandomInt(canvas.width);
                 currentBall.y = -RandomInt(100);
 
