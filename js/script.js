@@ -64,12 +64,41 @@ function page_init(lib){
 
     let leafs = [];
 
+    let colorPool = ["#396788", "#3b3988", "#8f44a7", "#a7447e", "#a1474b", "#718839", "#886439"];
+
+    function PullFromColorPool(){
+        return colorPool[RandomInt(colorPool.length-1)];
+    }
+
     console.log(page);
     console.log(ballBase);
+    console.log(ballBase.nominalBounds);
 
     for(let i = 0; i < ballCount; i++){
-        let newBall = ballBase.clone();
+        let newBall = new lib.ball(0,0,-1,0);
+        //TODO: maybe randomize scale
+        newBall.scaleX =.15;
+        newBall.scaleY =.15;
+        newBall.visible = false;
+        // let newBall = ballBase.clone();
         page.addChild(newBall);
+
+
+        newBall.gotoAndStop(0);
+        let tween = AddOnFrameEvent(newBall,newBall.totalFrames-1, function(){
+
+            newBall.x = RandomInt(canvas.width);
+            newBall.y = -RandomInt(100);
+
+            let color = Math.floor(Math.random()*16777215).toString(16);
+            newBall.fill.children[0].graphics._fill.style = PullFromColorPool();
+
+
+            newBall.gotoAndStop(0);
+
+            // RemoveOnFrameEvent(tween);
+
+        })
 
         ballPool.push(newBall);
     }
@@ -88,6 +117,7 @@ function page_init(lib){
             let tween = AddOnFrameEvent(currentLeaf,currentLeaf.totalFrames-1, function(){
 
                 localLeaf.children[0].graphics._fill.style = localLeaf.setColor;
+                localLeaf.children[0].opacity = 1;
 
 
                 localLeaf.gotoAndStop(0);
@@ -102,8 +132,7 @@ function page_init(lib){
         }
     }
 
-    console.log(leafs[0]);
-    console.log(leafs.length);
+    console.log(leafs[0].nominalBounds);
 
     let canvas = document.getElementById("canvas");
 
@@ -152,7 +181,9 @@ function page_init(lib){
 
 
             let color = Math.floor(Math.random()*16777215).toString(16);
-            currentBall.children[0].graphics._fill.style = "#"+color;
+            // currentBall.children[0].graphics._fill.style = "#"+color;
+            // currentBall.children[0].graphics._fill.style = PullFromColorPool();
+            currentBall.fill.children[0].graphics._fill.style = PullFromColorPool();
 
 
             // console.log(activeBalls);
@@ -160,7 +191,7 @@ function page_init(lib){
 
         }
 
-        let speed = 5;
+        let speed = 20;
 
         let currentBallRect = new createjs.Rectangle(0,0,0,0);
         let currentLeafRect = new createjs.Rectangle(0,0,0,0);
@@ -168,7 +199,6 @@ function page_init(lib){
         for(let i = 0; i < activeBalls.length; i++){
             let currentBall = activeBalls[i];
 
-            currentBall.y += speed;
 
             currentBallRect.x = currentBall.x;
             currentBallRect.y = currentBall.y;
@@ -176,62 +206,91 @@ function page_init(lib){
             currentBallRect.height = currentBall.nominalBounds.height * currentBall.scaleY;
 
 
-            for(let i = 0; i < leafs.length; i++){
+            for(let j = 0; j < leafs.length; j++){
 
-                currentLeafRect.x = leafs[i].x;
-                currentLeafRect.y = leafs[i].y;
-                currentLeafRect.width = leafs[i].nominalBounds.width;
-                currentLeafRect.height = leafs[i].nominalBounds.height;
+                // currentLeafRect.x = leafs[j].x;
+                // currentLeafRect.y = leafs[j].y;
+                // currentLeafRect.width = leafs[j].nominalBounds.width;
+                // currentLeafRect.height = leafs[j].nominalBounds.height;
 
+                currentLeafRect.x = leafs[j].x;
+                currentLeafRect.width = leafs[j].nominalBounds.width;
+                currentLeafRect.height = leafs[j].nominalBounds.height;
 
-                if(currentLeafRect.intersects(currentBallRect) && leafs[i].paused){
-
-                    // leafs[i].shape.graphics._fill.style = currentBall.children[0].graphics._fill.style;
-                    // leafs[i].shape_1.graphics._fill.style = currentBall.children[0].graphics._fill.style;
-                    // leafs[i].shape_2.graphics._fill.style = currentBall.children[0].graphics._fill.style;
-                    // leafs[i].shape_3.graphics._fill.style = currentBall.children[0].graphics._fill.style;
-                    // leafs[i].shape_4.graphics._fill.style = currentBall.children[0].graphics._fill.style;
-                    // leafs[i].shape_5.graphics._fill.style = currentBall.children[0].graphics._fill.style;
-                    // leafs[i].shape_6.graphics._fill.style = currentBall.children[0].graphics._fill.style;
-
-                    leafs[i].fill.children[0].graphics._fill.style = currentBall.children[0].graphics._fill.style;
-
-                    leafs[i].setColor = currentBall.children[0].graphics._fill.style;
-
-                    //TODO: set fill color
+                for(let k = 0; k <= 1; k+=.1){
 
 
-                    //TODO: ADD SPLASH EFFECT ON COLLISION
+                    if(leafs[j] === undefined){
+                        console.log(j);
+                    }
 
-                    currentBall.x = RandomInt(canvas.width);
-                    currentBall.y = -RandomInt(100);
+                    currentLeafRect.y = leafs[j].y + lerp(0, speed, k);
 
-                    let color = Math.floor(Math.random()*16777215).toString(16);
-                    currentBall.children[0].graphics._fill.style = "#"+color;
-
-                    // let tween = AddOnFrameEvent(boxes[i],boxes[i].totalFrames-1, function(){
-                    //
-                    //     boxes[i].children[0].graphics._fill.style = boxes[i].setColor;
-                    //
-                    //
-                    //     boxes[i].gotoAndStop(0);
-                    //
-                    //     // RemoveOnFrameEvent(tween);
-                    //
-                    // });
-
-                    // console.log(tween);
+                    if(currentLeafRect.intersects(currentBallRect) && leafs[j].paused){
 
 
-                    leafs[i].gotoAndPlay(0);
+                        // leafs[j].fill.children[0].graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                        leafs[j].fill.children[0].graphics._fill.style =  currentBall.fill.children[0].graphics._fill.style;
+                        leafs[j].fill.opacity = 1;
+
+                        leafs[j].setColor =  currentBall.fill.children[0].graphics._fill.style;
+                        leafs[j].opacity = 1;
+
+                        //TODO: set fill color
 
 
-                    // boxes[i].children[0].graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                        //TODO: ADD SPLASH EFFECT ON COLLISION
+                        currentBall.gotoAndPlay(0);
+
+
+                        // currentBall.x = RandomInt(canvas.width);
+                        // currentBall.y = -RandomInt(100);
+                        //
+                        // let color = Math.floor(Math.random()*16777215).toString(16);
+                        // currentBall.fill.children[0].graphics._fill.style = PullFromColorPool();
+                        // currentBall.children[0].graphics._fill.style = "#"+color;
+                        leafs[j].gotoAndPlay(0);
+
+                        j = leafs.length;
+                        k = 1;
+
+
+                    }
 
                 }
 
+                // if(currentLeafRect.intersects(currentBallRect) && leafs[j].paused){
+                //
+                //
+                //     leafs[j].fill.children[0].graphics._fill.style = currentBall.children[0].graphics._fill.style;
+                //     leafs[j].fill.opacity = 1;
+                //
+                //     leafs[j].setColor = currentBall.children[0].graphics._fill.style;
+                //     leafs[j].opacity = 1;
+                //
+                //     //TODO: set fill color
+                //
+                //
+                //     //TODO: ADD SPLASH EFFECT ON COLLISION
+                //
+                //     currentBall.x = RandomInt(canvas.width);
+                //     currentBall.y = -RandomInt(100);
+                //
+                //     let color = Math.floor(Math.random()*16777215).toString(16);
+                //     currentBall.children[0].graphics._fill.style = "#"+color;
+                //     leafs[j].gotoAndPlay(0);
+                //
+                //     j = leafs.length;
+                //
+                //
+                // }
+
             }
 
+            if(currentBall.paused){
+                currentBall.y += speed;
+                currentBall.y += speed;
+            }
 
 
             if(currentBall.y > page.nominalBounds.height){
@@ -239,7 +298,9 @@ function page_init(lib){
                 currentBall.y = -RandomInt(100);
 
                 let color = Math.floor(Math.random()*16777215).toString(16);
-                currentBall.children[0].graphics._fill.style = "#"+color;
+                // currentBall.children[0].graphics._fill.style = "#"+color;
+                currentBall.fill.children[0].graphics._fill.style = PullFromColorPool();
+
             }
 
         }
